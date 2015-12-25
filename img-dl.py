@@ -65,35 +65,49 @@ class Downloader(object):
             os.makedirs(norm_dir)
         return norm_dir
 
+    def _request_image_header(self, image_id):
+        url = urllib.parse.urljoin(self.root, image_id + '.jpg')
+        request = urllib.request.Request(url, method='HEAD')
+        response = urllib.request.urlopen(request)
+        return response
+
+    def _file_extension_from_header(self, headers):
+        content_type = headers['Content-type'].lower()
+        if 'jpeg' in content_type:
+            file_extension = 'jpg'
+        elif 'webm' in content_type:
+            file_extension = 'webm'
+        elif 'gif' in content_type:
+            file_extension = 'gif'
+        elif 'png' in content_type:
+            file_extension = 'png'
+        else:
+            file_extension = 'dat'
+        return file_extension
+
     def get_images(self):
         total = len(self.image_ids)
         digits = len(str(total))
         base_filename = ('{index:0' + str(digits) +
                          'd}-{image_id:s}.{file_extension}')
+
         for num, image_id in enumerate(self.image_ids):
             print('Getting {0}/{1}'.format(num+1, total))
-            url = urllib.parse.urljoin(self.root, image_id)
-            # if we don't specify a filetype, then imgur may redirect to
-            # a webpage. We'll lie and say we want jpg then figure out what
-            # kind of file we actually get
-            response = urllib.request.urlopen(url + '.jpg')
-            file_type = response.headers['Content-type'].lower()
-            if 'jpeg' in file_type:
-                file_extension = 'jpg'
-            elif 'webm' in file_type:
-                file_extension = 'webm'
-            elif 'gif' in file_type:
-                file_extension = 'gif'
-            elif 'png' in file_type:
-                file_extension = 'png'
-            else:
-                file_extension = 'dat'
+            header_resp = self._request_image_header(image_id)
+            file_extension = self._file_extension_from_header(
+                header_resp.headers)
             filename = base_filename.format(
                 index=num,
                 image_id=image_id,
                 file_extension=file_extension
                 )
             filepath = os.path.join(self.directory, filename)
+            if os.path.exists(filepath):
+                print('{0} already exists. Skipping...'.format(
+                    filepath))
+                continue
+            url = urllib.parse.urljoin(self.root, image_id)
+            response = urllib.request.urlopen(url + '.' + file_extension)
             with open(filepath, 'wb') as fp:
                 fp.write(response.read())
 
