@@ -67,6 +67,9 @@ class Downloader(object):
 
     def get_images(self):
         total = len(self.image_ids)
+        digits = len(str(total))
+        base_filename = ('{index:0' + str(digits) +
+                         'd}-{image_id:s}.{file_extension}')
         for num, image_id in enumerate(self.image_ids):
             print('Getting {0}/{1}'.format(num+1, total))
             url = urllib.parse.urljoin(self.root, image_id)
@@ -85,8 +88,13 @@ class Downloader(object):
                 file_extension = 'png'
             else:
                 file_extension = 'dat'
-            filename = os.path.join(self.directory, image_id + '.' + file_extension)
-            with open(filename, 'wb') as fp:
+            filename = base_filename.format(
+                index=num,
+                image_id=image_id,
+                file_extension=file_extension
+                )
+            filepath = os.path.join(self.directory, filename)
+            with open(filepath, 'wb') as fp:
                 fp.write(response.read())
 
 
