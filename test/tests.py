@@ -1,6 +1,4 @@
-import pytest
-
-from img_dl import imgdl
+from imgdl import img_dl
 
 class TestCreateFolderName(object):
     def sub_title_and_key(self, title, album_key):
@@ -20,4 +18,16 @@ class TestCreateFolderName(object):
         album_key = 'XbUFk'
         title = None
         name_1 = img_dl.create_folder_name(title, album_key)
-        assert '(XbUFk)' == name_1
+        assert name_1 == 'XbUFk'
+
+    def test_replace_exclamation_mark(self):
+        album_key = 'XbUFk'
+        title_1 = 'Test title!'
+        name_1 = img_dl.create_folder_name(title_1, album_key)
+        assert name_1 == self.sub_title_and_key('Test title', album_key)
+
+    def test_replace_question_mark(self):
+        album_key = 'XbUFk'
+        title_1 = 'Test title?'
+        name_1 = img_dl.create_folder_name(title_1, album_key)
+        assert name_1 == self.sub_title_and_key('Test title', album_key)
