@@ -9,6 +9,7 @@ import urllib.parse
 
 class SourceUrl(object):
     def __init__(self, url_string):
+        self.user_url = url_string
         self.url_parts = urllib.parse.urlparse(url_string)
         self.album_key = self._parse_key()
 
@@ -28,24 +29,34 @@ class SourceUrl(object):
 
 
 class Album(object):
-    def __init__(self, album_url):
-        self.url = album_url
-        self.page_html = self._get_page()
+    def __init__(self, source_url):
+        self.url = source_url
         self.image_ids = self._extract_img_ids()
 
     def _extract_img_ids(self):
+        raw_html = self._get_blog_page()
         img_url_re = r'<div\sid="([a-zA-Z0-9]*)"\sclass=".*post-image-container.*">'
-        return re.findall(img_url_re, self.page_html)
+        return re.findall(img_url_re, raw_html)
 
-    def _get_page(self):
-        response = urllib.request.urlopen(self.url)
+    def _get_blog_page(self):
+        return self._get_page(self.url.user_url)
+
+    def _get_user_page(self):
+        return self._get_page(self.url.blog_url)
+
+    def _get_page(self, url):
+        print('Downloading HTML from {}'.format(url))
+        response = urllib.request.urlopen(url)
         raw_bytes = response.read()
         return raw_bytes.decode('utf-8')
 
     @property
     def album_title(self):
+        raw_html = self._get_user_page()
+        with open('temp.html', 'w') as f:
+            f.write(raw_html)
         title_re = r'<title>\s*(.*) - Album on Imgur<\/title>'
-        match = re.search(title_re, self.page_html)
+        match = re.search(title_re, raw_html)
         if match:
             return match.group(1).strip()
         return None
@@ -130,7 +141,7 @@ def create_folder_name(title, album_key):
 
 def main(url, dest_folder):
     source_url = SourceUrl(url)
-    album = Album(source_url.blog_url)
+    album = Album(source_url)
 
     print('{0} ({1}): {2} images'.format(
         album.album_title,
