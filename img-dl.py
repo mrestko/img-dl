@@ -92,7 +92,9 @@ class Downloader(object):
                          'd}-{image_id:s}.{file_extension}')
 
         for num, image_id in enumerate(self.image_ids):
-            print('File {0}/{1}...'.format(num+1, total), end="")
+            print('File {0}/{1}...'.format(num+1, total),
+                  end="",
+                  flush=True)
             header_resp = self._request_image_header(image_id)
             file_extension = self._file_extension_from_header(
                 header_resp.headers)
