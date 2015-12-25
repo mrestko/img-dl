@@ -98,11 +98,12 @@ class Downloader(object):
                 fp.write(response.read())
 
 
-def sanitize_title_for_path(title):
+def create_folder_name(title, album_key):
     # only allow alphanumerics, space, dash, underscore, apostrophe
     # replace everything else with space and strip whitespace
-    subbed = re.sub(r'[^a-zA-Z0-9_\'\-\s]', ' ', title)
-    return subbed.strip()
+    subbed = re.sub(r'[^a-zA-Z0-9_\'\-\s]', ' ', title).strip()
+    with_key = subbed + ' (' + album_key + ')'
+    return with_key
 
 
 def main():
@@ -123,7 +124,9 @@ def main():
     if args.PATH:
         directory = args.PATH
     else:
-        directory = sanitize_title_for_path(album.album_title)
+        directory = create_folder_name(
+            album.album_title,
+            source_url.album_key)
 
     downloader = Downloader(album.image_ids, directory)
     downloader.get_images()
