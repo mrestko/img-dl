@@ -66,7 +66,9 @@ class Downloader(object):
         return norm_dir
 
     def get_images(self):
-        for image_id in self.image_ids:
+        total = len(self.image_ids)
+        for num, image_id in enumerate(self.image_ids):
+            print('Getting {0}/{1}'.format(num+1, total))
             url = urllib.parse.urljoin(self.root, image_id)
             # if we don't specify a filetype, then imgur may redirect to
             # a webpage. We'll lie and say we want jpg then figure out what
