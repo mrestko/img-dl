@@ -46,7 +46,9 @@ class Album(object):
     def album_title(self):
         title_re = r'<title>\s*(.*) - Album on Imgur<\/title>'
         match = re.search(title_re, self.page_html)
-        return match.group(1).strip()
+        if match:
+            return match.group(1).strip()
+        return None
 
     @property
     def num_images(self):
@@ -118,9 +120,12 @@ class Downloader(object):
 def create_folder_name(title, album_key):
     # only allow alphanumerics, space, dash, underscore, apostrophe
     # replace everything else with space and strip whitespace
-    subbed = re.sub(r'[^a-zA-Z0-9_\'\-\s]', ' ', title).strip()
-    with_key = subbed + ' (' + album_key + ')'
-    return with_key
+    if title:
+        subbed = re.sub(r'[^a-zA-Z0-9_\'\-\s]', ' ', title).strip()
+        with_key = subbed + ' (' + album_key + ')'
+        return with_key
+    else:
+        return album_key
 
 
 def main():
