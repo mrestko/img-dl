@@ -71,7 +71,7 @@ class Downloader(object):
             # if we don't specify a filetype, then imgur may redirect to
             # a webpage. We'll lie and say we want jpg then figure out what
             # kind of file we actually get
-            response = urllib.request.urlopen(url)
+            response = urllib.request.urlopen(url + '.jpg')
             file_type = response.headers['Content-type'].lower()
             if 'jpeg' in file_type:
                 file_extension = 'jpg'
