@@ -92,7 +92,7 @@ class Downloader(object):
                          'd}-{image_id:s}.{file_extension}')
 
         for num, image_id in enumerate(self.image_ids):
-            print('Getting {0}/{1}'.format(num+1, total))
+            print('File {0}/{1}...'.format(num+1, total), end="")
             header_resp = self._request_image_header(image_id)
             file_extension = self._file_extension_from_header(
                 header_resp.headers)
@@ -103,13 +103,14 @@ class Downloader(object):
                 )
             filepath = os.path.join(self.directory, filename)
             if os.path.exists(filepath):
-                print('{0} already exists. Skipping...'.format(
-                    filepath))
+                print('{0} already exists. Skipping.'.format(
+                    filename))
                 continue
             url = urllib.parse.urljoin(self.root, image_id)
             response = urllib.request.urlopen(url + '.' + file_extension)
             with open(filepath, 'wb') as fp:
                 fp.write(response.read())
+            print('done.')
 
 
 def create_folder_name(title, album_key):
