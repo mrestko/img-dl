@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
-import re
-import urllib.request, urllib.parse
 import os
-import tempfile
+import re
+import urllib.request
+import urllib.parse
+
 
 class SourceUrl(object):
     def __init__(self, url_string):
@@ -17,12 +18,14 @@ class SourceUrl(object):
 
     def is_imgur(self):
         match = re.search(r'imgur\.com', self.url_parts.netloc)
-        if match: return True
+        if match:
+            return True
         return False
 
     @property
     def blog_url(self):
         return 'https://imgur.com/a/' + self.album_key + '/layout/blog'
+
 
 class Album(object):
     def __init__(self, album_url):
@@ -84,6 +87,7 @@ class Downloader(object):
             with open(filename, 'wb') as fp:
                 fp.write(response.read())
 
+
 def sanitize_title_for_path(title):
     # only allow alphanumerics, space, dash, underscore, apostrophe
     # replace everything else with space and strip whitespace
@@ -103,7 +107,7 @@ def main():
 
     print('{0} ({1}): {2} images'.format(
         album.album_title,
-        source_url.album_key, 
+        source_url.album_key,
         album.num_images))
 
     if args.PATH:
