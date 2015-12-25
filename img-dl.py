@@ -128,14 +128,8 @@ def create_folder_name(title, album_key):
         return album_key
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description='img-dl, a command line utility for downlading web albums')
-    parser.add_argument('URL', help='Imgur album URL')
-    parser.add_argument('PATH', help='Download images into this folder', nargs='?')
-    args = parser.parse_args()
-
-    source_url = SourceUrl(args.URL)
+def main(url, dest_folder):
+    source_url = SourceUrl(url)
     album = Album(source_url.blog_url)
 
     print('{0} ({1}): {2} images'.format(
@@ -143,8 +137,8 @@ def main():
         source_url.album_key,
         album.num_images))
 
-    if args.PATH:
-        directory = args.PATH
+    if dest_folder:
+        directory = dest_folder
     else:
         directory = create_folder_name(
             album.album_title,
@@ -155,4 +149,9 @@ def main():
     exit()
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(
+    description='img-dl, a command line utility for downlading web albums')
+    parser.add_argument('URL', help='Imgur album URL')
+    parser.add_argument('PATH', help='Download images into this folder', nargs='?')
+    args = parser.parse_args()
+    main(args.URL, args.PATH)
