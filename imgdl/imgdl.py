@@ -97,7 +97,8 @@ class Downloader(object):
         elif 'webm' in content_type:
             file_extension = 'webm'
         elif 'gif' in content_type:
-            file_extension = 'gif'
+            # return webm instead
+            file_extension = 'webm'
         elif 'png' in content_type:
             file_extension = 'png'
         else:
