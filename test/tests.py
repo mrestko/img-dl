@@ -36,6 +36,9 @@ class TestSourceUrl(object):
     def test_accept_imgur_urls(self):
         assert img_dl.SourceUrl('http://imgur.com/a/B0s3o').is_imgur() == True
 
+    def test_rejects_non_imgur_url(self):
+        assert img_dl.SourceUrl('https://www.google.com').is_imgur() == False
+
     def test_extracts_album_key(self):
         assert img_dl.SourceUrl('http://imgur.com/a/B0s3o').album_key == 'B0s3o'
 
