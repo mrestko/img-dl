@@ -38,7 +38,7 @@ class TestSourceUrl(object):
         # does not raise exception
         img_dl.SourceUrl('http://imgur.com/a/B0s3o')
 
-    @raises(Exception)
+    @raises(img_dl.InvalidUrlError)
     def test_rejects_non_imgur_url(self):
         img_dl.SourceUrl('https://www.google.com/search')
 

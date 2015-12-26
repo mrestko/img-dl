@@ -6,13 +6,19 @@ import re
 import urllib.request
 import urllib.parse
 
+class ImgDlException(Exception):
+    pass
+
+class InvalidUrlError(ImgDlException):
+    pass
+
 
 class SourceUrl(object):
     def __init__(self, url_string):
         self.user_url = url_string
         self._url_parts = urllib.parse.urlparse(url_string)
         if not self._is_imgur():
-            raise Exception
+            raise InvalidUrlError
 
     def _is_imgur(self):
         match = re.search(r'imgur\.com', self._url_parts.netloc)
