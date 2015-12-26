@@ -11,17 +11,19 @@ class SourceUrl(object):
     def __init__(self, url_string):
         self.user_url = url_string
         self._url_parts = urllib.parse.urlparse(url_string)
+        if not self._is_imgur():
+            raise Exception
+
+    def _is_imgur(self):
+        match = re.search(r'imgur\.com', self._url_parts.netloc)
+        if match:
+            return True
+        return False
 
     @property
     def album_key(self):
         result = re.search(r'\/([a-zA-Z0-9]*)$', self._url_parts.path)
         return result.group(1)
-
-    def is_imgur(self):
-        match = re.search(r'imgur\.com', self._url_parts.netloc)
-        if match:
-            return True
-        return False
 
     @property
     def blog_url(self):

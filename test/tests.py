@@ -1,4 +1,5 @@
 from imgdl import img_dl
+from nose.tools import raises
 
 class TestCreateFolderName(object):
     def sub_title_and_key(self, title, album_key):
@@ -34,10 +35,12 @@ class TestCreateFolderName(object):
 
 class TestSourceUrl(object):
     def test_accept_imgur_urls(self):
-        assert img_dl.SourceUrl('http://imgur.com/a/B0s3o').is_imgur() == True
+        # does not raise exception
+        img_dl.SourceUrl('http://imgur.com/a/B0s3o')
 
+    @raises(Exception)
     def test_rejects_non_imgur_url(self):
-        assert img_dl.SourceUrl('https://www.google.com').is_imgur() == False
+        img_dl.SourceUrl('https://www.google.com/search')
 
     def test_extracts_album_key(self):
         assert img_dl.SourceUrl('http://imgur.com/a/B0s3o').album_key == 'B0s3o'
