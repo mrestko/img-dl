@@ -53,8 +53,6 @@ class Album(object):
     @property
     def album_title(self):
         raw_html = self._get_user_page()
-        with open('temp.html', 'w') as f:
-            f.write(raw_html)
         title_re = r'<title>\s*(.*) - Album on Imgur<\/title>'
         match = re.search(title_re, raw_html)
         if match:
