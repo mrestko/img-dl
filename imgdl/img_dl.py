@@ -11,9 +11,9 @@ class SourceUrl(object):
     def __init__(self, url_string):
         self.user_url = url_string
         self._url_parts = urllib.parse.urlparse(url_string)
-        self.album_key = self._parse_key()
 
-    def _parse_key(self):
+    @property
+    def album_key(self):
         result = re.search(r'\/([a-zA-Z0-9]*)$', self._url_parts.path)
         return result.group(1)
 
