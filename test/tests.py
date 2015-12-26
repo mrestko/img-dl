@@ -31,3 +31,27 @@ class TestCreateFolderName(object):
         title_1 = 'Test title?'
         name_1 = img_dl.create_folder_name(title_1, album_key)
         assert name_1 == self.sub_title_and_key('Test title', album_key)
+
+class TestSourceUrl(object):
+    def test_accept_imgur_urls(self):
+        assert img_dl.SourceUrl('http://imgur.com/a/B0s3o').is_imgur() == True
+
+    def test_extracts_album_key(self):
+        assert img_dl.SourceUrl('http://imgur.com/a/B0s3o').album_key == 'B0s3o'
+
+    def test_blog_url_format(self):
+        blog_url = img_dl.SourceUrl('http://imgur.com/a/B0s3o').blog_url
+        assert blog_url == 'https://imgur.com/a/B0s3o/layout/blog'
+
+
+class TestAlbum(object):
+    def test_extracts_album_title(self):
+        source_url = img_dl.SourceUrl('http://imgur.com/gallery/nmHpn')
+        album = img_dl.Album(source_url)
+        title = album.album_title
+        assert title == 'Lion gets best foot massage ever!'
+
+    def test_counts_correct_number_of_images(self):
+        source_url = img_dl.SourceUrl('http://imgur.com/a/B0s3o')
+        album = img_dl.Album(source_url)
+        assert album.num_images == 5
