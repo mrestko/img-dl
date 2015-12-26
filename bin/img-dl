@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+
+from imgdl import imgdl
+import argparse
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+    description='img-dl, a command line utility for downlading web albums')
+    parser.add_argument('URL', help='Imgur album URL')
+    parser.add_argument('PATH', help='Download images into this folder', nargs='?')
+    args = parser.parse_args()
+    imgdl.main(args.URL, args.PATH)

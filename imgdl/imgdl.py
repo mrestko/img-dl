@@ -164,12 +164,3 @@ def main(url, dest_folder):
 
     downloader = Downloader(album.image_ids, directory)
     downloader.get_images()
-    exit()
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-    description='img-dl, a command line utility for downlading web albums')
-    parser.add_argument('URL', help='Imgur album URL')
-    parser.add_argument('PATH', help='Download images into this folder', nargs='?')
-    args = parser.parse_args()
-    main(args.URL, args.PATH)
